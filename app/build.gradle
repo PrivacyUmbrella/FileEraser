@@ -1,0 +1,41 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        applicationId "pu.file_eraser"
+        minSdkVersion 19
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compileOnly 'de.robv.android.xposed:api:82'
+    compileOnly 'androidx.annotation:annotation:1.1.0'
+
+    /* 仅能找到的两个Android NIO2兼容库。
+    似乎使用这种库操作文件都无法被hook到。
+     不过绝大多数应用都使用传统文件API*/
+//    implementation 'me.zhanghai.android.retrofile:library:1.1.0'
+//    implementation 'org.lukhnos:nnio:0.2'
+}
+
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        outputFileName = "${rootProject.name}_${variant.versionCode}_${variant.buildType.name}.apk"
+    }
+}

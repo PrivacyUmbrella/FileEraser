@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FileEraser</string>
+    <string name="xposed_description">Rewrite the file before deleting it to prevent data recovery.</string>
+</resources>
