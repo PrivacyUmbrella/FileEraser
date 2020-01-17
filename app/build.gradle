@@ -7,8 +7,8 @@ android {
         applicationId "pu.file_eraser"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
     }
     buildTypes {
         release {
@@ -36,6 +36,6 @@ dependencies {
 
 android.applicationVariants.all { variant ->
     variant.outputs.all {
-        outputFileName = "${rootProject.name}_${variant.versionCode}_${variant.buildType.name}.apk"
+        outputFileName = "${rootProject.name}_${variant.versionName}_${variant.buildType.name}.apk"
     }
 }

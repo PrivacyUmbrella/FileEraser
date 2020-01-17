@@ -10,6 +10,9 @@ import pu.file_eraser.global.Constant;
 
 public class FileUtils {
 
+    private FileUtils() {
+    }
+
     private static final String TAG = Constant.LOG_TAG_PREFIX + "FileUtils";
 
     private static final int BUFFER_SIZE = 10 * 1024;    //10KiB

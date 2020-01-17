@@ -29,16 +29,26 @@ public class MainXposed implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     @Override
     public void initZygote(StartupParam startupParam) {
+        int ver = XposedBridge.getXposedVersion();
+        // public boolean startsSystemServer   Added in API level 60
+        if (ver < 60) {
+            Log.w(TAG, "initZygote: startupParam.startsSystemServer is not available.");
+            initZygoteHook(startupParam);
+        }
         // 防止重复挂接
-        if (startupParam.startsSystemServer) {
+        else if (startupParam.startsSystemServer) {
 //            XposedBridge.log(TAG);
-            Log.i(TAG, "initZygote in version " + XposedBridge.getXposedVersion());
-            new IoHook().initZygote(startupParam);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                new OsHook().initZygote(startupParam);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    new NioHook().initZygote(startupParam);
-                }
+            Log.i(TAG, "initZygote in version " + ver);
+            initZygoteHook(startupParam);
+        }
+    }
+
+    private void initZygoteHook(StartupParam startupParam) {
+        new IoHook().initZygote(startupParam);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            new OsHook().initZygote(startupParam);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                new NioHook().initZygote(startupParam);
             }
         }
     }
