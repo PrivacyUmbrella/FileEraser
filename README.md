@@ -12,7 +12,7 @@
 
 * 启用本模块后，文件删除速度会变慢，并且对闪存芯片的磨损会加剧。因此请在删除了敏感数据之后及时禁用本模块。
 
-* 本模块完全开源。开发者不对使用效果及潜在风险做出任何保证。
+* 因为一些技术限制，本模块可能在部分场景下无法生效。请查看[`logcat`](https://github.com/PrivacyUmbrella/FileEraser/blob/39733a363041a7fd438fe2091fe04135e2680834/app/src/main/java/pu/file_eraser/global/Constant.java#L7)以确认被擦除的文件。
 
 ## 附加事项
 
