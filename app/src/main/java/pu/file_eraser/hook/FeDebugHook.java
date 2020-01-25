@@ -8,7 +8,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import pu.file_eraser.global.Constant;
 
-public class FeDebugHook implements IXposedHookLoadPackage {
+class FeDebugHook implements IXposedHookLoadPackage {
 
     private static final String TAG = Constant.LOG_TAG_PREFIX + "FeDebugHook";
 

@@ -28,7 +28,7 @@ public class FileUtils {
     private static boolean eraseSingleFile(String path) {
         File file = new File(path);
         if (!file.exists() || file.isDirectory()) {
-            Log.w(TAG, "eraseSingleFile: " + path + " does not exists or it's a directory!");
+            Log.w(TAG, "eraseSingleFile: " + path + " does not exist or it's a directory!");
             return false;
         }
         long size = file.length();

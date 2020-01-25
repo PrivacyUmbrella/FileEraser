@@ -16,7 +16,7 @@ import pu.file_eraser.global.Constant;
 import pu.file_eraser.util.FileUtils;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class NioHook implements IXposedHookZygoteInit {
+class NioHook implements IXposedHookZygoteInit {
 
     private static final String TAG = Constant.LOG_TAG_PREFIX + "NioHook";
 

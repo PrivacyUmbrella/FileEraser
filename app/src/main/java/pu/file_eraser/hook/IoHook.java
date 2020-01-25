@@ -10,7 +10,7 @@ import de.robv.android.xposed.XposedHelpers;
 import pu.file_eraser.global.Constant;
 import pu.file_eraser.util.FileUtils;
 
-public class IoHook implements IXposedHookZygoteInit {
+class IoHook implements IXposedHookZygoteInit {
 
     private static final String TAG = Constant.LOG_TAG_PREFIX + "IoHook";
 

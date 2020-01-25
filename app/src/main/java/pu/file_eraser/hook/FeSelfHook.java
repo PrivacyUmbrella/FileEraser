@@ -6,7 +6,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import pu.file_eraser.BuildConfig;
 
-public class FeSelfHook implements IXposedHookLoadPackage {
+class FeSelfHook implements IXposedHookLoadPackage {
 
     private XC_LoadPackage.LoadPackageParam mLpparam;
 
