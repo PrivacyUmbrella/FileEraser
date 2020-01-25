@@ -25,11 +25,16 @@ public class MainXposed implements IXposedHookZygoteInit, IXposedHookLoadPackage
             new FeSelfHook().handleLoadPackage(lpparam);
 
         if (BuildConfig.DEBUG) new FeDebugHook().handleLoadPackage(lpparam);
+
+        new FeNoticeHook().handleLoadPackage(lpparam);
     }
 
     @Override
     public void initZygote(StartupParam startupParam) {
-        int ver = XposedBridge.getXposedVersion();
+        // 37 - 65: EdXposed does not support.
+        @SuppressWarnings("deprecation")
+        int ver = XposedBridge.XPOSED_BRIDGE_VERSION;
+        if (ver == 0) ver = XposedBridge.getXposedVersion();
         // public boolean startsSystemServer   Added in API level 60
         if (ver < 60) {
             Log.w(TAG, "initZygote: startupParam.startsSystemServer is not available.");
