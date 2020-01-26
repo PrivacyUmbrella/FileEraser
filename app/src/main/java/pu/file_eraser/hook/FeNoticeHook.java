@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
@@ -13,6 +14,8 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import pu.file_eraser.BuildConfig;
+import pu.file_eraser.R;
 import pu.file_eraser.global.Constant;
 
 class FeNoticeHook implements IXposedHookLoadPackage {
@@ -59,8 +62,16 @@ class FeNoticeHook implements IXposedHookLoadPackage {
             builder = new Notification.Builder(mContext);
         }
         builder.setSmallIcon(android.R.drawable.ic_menu_manage);
-        builder.setContentTitle(Constant.XPOSED_WARNING_TITLE);
-        builder.setContentText(Constant.XPOSED_WARNING_TEXT);
+        String title = null, text = null;
+        try {
+            Resources resources = mContext.createPackageContext(BuildConfig.APPLICATION_ID, 0).getResources();
+            title = resources.getString(R.string.xposed_warning_title);
+            text = resources.getString(R.string.xposed_warning_text);
+        } catch (Throwable throwable) { //SecurityException|PackageManager.NameNotFoundException|Resources.NotFoundException
+            Log.e(TAG, "notifyXposedWarning: ", throwable);
+        }
+        builder.setContentTitle(title);
+        builder.setContentText(text);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.setVisibility(Notification.VISIBILITY_PUBLIC);
             builder.setColor(Color.RED);
