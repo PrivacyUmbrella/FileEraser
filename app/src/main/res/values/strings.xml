@@ -2,5 +2,5 @@
     <string name="app_name">FileEraser</string>
     <string name="xposed_description">Rewrite the file before deleting it to prevent data recovery.</string>
     <string name="xposed_warning_title">FileEraser xposed module enabled!</string>
-    <string name="xposed_warning_text">Please DISABLE it in time when it\'s NOT needed.?_</string>
+    <string name="xposed_warning_text">Because it will increase flash wear. Please DISABLE it in time when it\'s NOT needed.</string>
 </resources>
