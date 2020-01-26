@@ -2,17 +2,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="pu.file_eraser">
 
+    <!--
+    伪装成一个Android TV应用以隐藏图标
+
+    一开始就不会显示图标
+    即使在手机也依然可以通过Android Studio安装打开
+    可以在设置中找到并且卸载应用
+    -->
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
     <application
         android:name="._Application"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.DeviceDefault"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning,MissingApplicationIcon">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning,MissingApplicationIcon,MissingTvBanner">
 
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
 
