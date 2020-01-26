@@ -61,7 +61,6 @@ class FeNoticeHook implements IXposedHookLoadPackage {
         } else {
             builder = new Notification.Builder(mContext);
         }
-        builder.setSmallIcon(android.R.drawable.ic_menu_manage);
         String title = null, text = null;
         try {
             Resources resources = mContext.createPackageContext(BuildConfig.APPLICATION_ID, 0).getResources();
@@ -70,14 +69,16 @@ class FeNoticeHook implements IXposedHookLoadPackage {
         } catch (Throwable throwable) { //SecurityException|PackageManager.NameNotFoundException|Resources.NotFoundException
             Log.e(TAG, "notifyXposedWarning: ", throwable);
         }
-        builder.setContentTitle(title);
-        builder.setContentText(text);
+        builder.setSmallIcon(android.R.drawable.ic_menu_manage)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setStyle(new Notification.BigTextStyle().bigText(text))
+                .setAutoCancel(false)
+                .setOngoing(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.setVisibility(Notification.VISIBILITY_PUBLIC);
-            builder.setColor(Color.RED);
+            builder.setVisibility(Notification.VISIBILITY_PUBLIC)
+                    .setColor(Color.RED);
         }
-        builder.setAutoCancel(false);
-        builder.setOngoing(true);
         manager.notify(hashCode(), builder.build());
     }
 }
