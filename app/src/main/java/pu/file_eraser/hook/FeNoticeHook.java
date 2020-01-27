@@ -91,7 +91,10 @@ class FeNoticeHook implements IXposedHookLoadPackage {
                 .setContentText(text)
                 .setStyle(new Notification.BigTextStyle().bigText(text))
                 .setAutoCancel(false)
-                .setOngoing(true);
+                .setOngoing(true)
+                .setTicker(title)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setShowWhen(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.setVisibility(Notification.VISIBILITY_PUBLIC)
                     .setColor(Color.RED);
