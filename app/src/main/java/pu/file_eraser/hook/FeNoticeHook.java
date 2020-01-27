@@ -17,6 +17,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import pu.file_eraser.BuildConfig;
 import pu.file_eraser.R;
 import pu.file_eraser.global.Constant;
+import pu.file_eraser.util.AppUtils;
 
 class FeNoticeHook implements IXposedHookLoadPackage {
 
@@ -24,13 +25,17 @@ class FeNoticeHook implements IXposedHookLoadPackage {
 
     private Context mContext;
     private XC_MethodHook.Unhook mUnhook;
+    private NotificationManager mNotificationManager;
+    private int mHashCode = hashCode();
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
         if ("android".equals(lpparam.packageName) && lpparam.isFirstApplication) {
+            Log.d(TAG, "handleLoadPackage: called");
             mContext = AndroidAppHelper.currentApplication();
-            mUnhook = XposedHelpers.findAndHookMethod("com.android.server.am.ActivityManagerService",
-                    Thread.currentThread().getContextClassLoader(),
+            Class<?> amsClazz = XposedHelpers.findClass("com.android.server.am.ActivityManagerService",
+                    Thread.currentThread().getContextClassLoader());
+            mUnhook = XposedHelpers.findAndHookMethod(amsClazz,
                     "finishBooting",
                     new XC_MethodHook() {
 
@@ -38,8 +43,19 @@ class FeNoticeHook implements IXposedHookLoadPackage {
                         protected void afterHookedMethod(MethodHookParam param) {
                             notifyXposedWarning();
                             if (mUnhook != null) {
-                                Log.i(TAG, "afterHookedMethod: unhook");
+                                Log.i(TAG, "afterHookedMethod: finishBooting [boot completed]");
                                 mUnhook.unhook();
+                                XposedHelpers.findAndHookMethod(amsClazz,
+                                        "shutdown", int.class,
+                                        new XC_MethodHook() {
+
+                                            @Override
+                                            protected void beforeHookedMethod(MethodHookParam param) {
+                                                Log.i(TAG, "beforeHookedMethod: shutdown [normal shutdown/reboot]");
+                                                clearNotification();
+                                                mUnhook = null;
+                                            }
+                                        });
                             }
                         }
                     });
@@ -48,26 +64,27 @@ class FeNoticeHook implements IXposedHookLoadPackage {
 
     private void notifyXposedWarning() {
         Notification.Builder builder;
-        NotificationManager manager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (manager == null) {
+        mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (mNotificationManager == null) {
             Log.e(TAG, "notifyXposedWarning: NotificationManager is null! Cannon send notification.");
             return;
         }
-        String channelId = TAG + hashCode(), channelName = "FileEraser";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-            manager.createNotificationChannel(channel);
-            builder = new Notification.Builder(mContext, channelId);
-        } else {
-            builder = new Notification.Builder(mContext);
-        }
-        String title = null, text = null;
+        String title = null, text = null, channelName = null;
         try {
-            Resources resources = mContext.createPackageContext(BuildConfig.APPLICATION_ID, 0).getResources();
+            Context myCtx = mContext.createPackageContext(BuildConfig.APPLICATION_ID, 0);
+            Resources resources = myCtx.getResources();
             title = resources.getString(R.string.xposed_warning_title);
             text = resources.getString(R.string.xposed_warning_text);
+            channelName = AppUtils.getLabel(myCtx);
         } catch (Throwable throwable) { //SecurityException|PackageManager.NameNotFoundException|Resources.NotFoundException
             Log.e(TAG, "notifyXposedWarning: ", throwable);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(TAG, channelName, NotificationManager.IMPORTANCE_HIGH);
+            mNotificationManager.createNotificationChannel(channel);
+            builder = new Notification.Builder(mContext, TAG);
+        } else {
+            builder = new Notification.Builder(mContext);
         }
         builder.setSmallIcon(android.R.drawable.ic_menu_manage)
                 .setContentTitle(title)
@@ -79,6 +96,16 @@ class FeNoticeHook implements IXposedHookLoadPackage {
             builder.setVisibility(Notification.VISIBILITY_PUBLIC)
                     .setColor(Color.RED);
         }
-        manager.notify(hashCode(), builder.build());
+        Log.d(TAG, "notifyXposedWarning: hashCode: " + mHashCode);
+        mNotificationManager.notify(TAG, mHashCode, builder.build());
+    }
+
+    private void clearNotification() {
+        if (mNotificationManager != null) {
+            mNotificationManager.cancel(TAG, mHashCode);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mNotificationManager.deleteNotificationChannel(TAG);
+            }
+        }
     }
 }
