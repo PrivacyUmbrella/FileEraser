@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">文件擦除器</string>
-    <string name="xposed_description">在删除文件之前重写它以防止数据恢复。</string>
+    <string name="xposed_description">在删除文件之前重写它以防止数据恢复。\n源代码：https://github.com/PrivacyUmbrella/FileEraser</string>
     <string name="xposed_warning_text">因为会增加闪存磨损，请在不需要的时候禁用之。</string>
     <string name="xposed_warning_title">文件擦除器xposed模块已启用！</string>
 </resources>

@@ -92,7 +92,7 @@ class FeNoticeHook implements IXposedHookLoadPackage {
                 .setStyle(new Notification.BigTextStyle().bigText(text))
                 .setAutoCancel(false)
                 .setOngoing(true)
-                .setTicker(title)
+                .setTicker(title + text)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setShowWhen(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
